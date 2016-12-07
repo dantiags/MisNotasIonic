@@ -1,6 +1,27 @@
 
 (function(){ 
-  var app = angular.module('starter', ['ionic'])
+  var app = angular.module('starter', ['ionic']);
+  var notas = [
+          {id: "1", titulo: 'Titulo 1', descripcion:'Descripcion 1'},
+          {id: "2",titulo: 'Titulo 2', descripcion:'Descripcion 2'},
+          {id: "3",titulo: 'Titulo 3', descripcion:'Descripcion 3'},
+          {id: "4",titulo: 'Titulo 4', descripcion:'Descripcion 4'},
+        ];
+
+  function getNota(id){
+      return notas.filter(function(nota){
+        return nota.id === id;
+      })[0];
+  }
+
+  function updateNota(nota){
+    for(var i=0; i< notas.length; i++){
+      if(notas[i].id === nota.id){
+          notas[i] = nota;
+          return;
+      }
+    }
+  }
 
   app.config(function($stateProvider, $urlRouterProvider){
     $stateProvider.state('list', {
@@ -8,19 +29,23 @@
       templateUrl: 'templates/list.html'
     });
     $stateProvider.state('edit', {
-      url: '/edit',
+      url: '/edit/:id',
       templateUrl: 'templates/edit.html'
     });    
     $urlRouterProvider.otherwise('/list');
   });
 
   app.controller('ListCtrl', function($scope){
-        $scope.notas = [
-          {titulo: 'Titulo 1', descripcion:'Descripcion 1'},
-          {titulo: 'Titulo 2', descripcion:'Descripcion 2'},
-          {titulo: 'Titulo 3', descripcion:'Descripcion 3'},
-          {titulo: 'Titulo 4', descripcion:'Descripcion 4'},
-        ];
+        $scope.notas = notas; 
+  });
+
+  app.controller('EditCtrl', function($scope, $state){
+        $scope.id = $state.params.id;
+        $scope.nota = angular.copy(getNota($scope.id));
+        $scope.saveNota = function(){
+          updateNota($scope.nota);
+          $state.go("list");
+        }
   });
 
   app.run(function($ionicPlatform) {
