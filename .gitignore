@@ -4,3 +4,8 @@
 node_modules/
 platforms/
 plugins/
+
+# added by aycron
+.vscode/
+jsconfig.json
+typings/
